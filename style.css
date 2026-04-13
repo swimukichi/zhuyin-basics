@@ -230,6 +230,12 @@ h2 {
   display: block;
 }
 
+.tone-hanzi {
+  font-size: 14px;
+  display: block;
+  font-weight: bold;
+}
+
 .tone-desc {
   font-size: 11px;
   color: #999;

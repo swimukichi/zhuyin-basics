@@ -8,21 +8,49 @@ const quizState = {
   selectedOption: null
 };
 
-// クイズ用問題生成関数
+// クイズ用問題生成関数（声調判定を含む）
 function generateQuizQuestions() {
   // すべての音節から問題データを生成
-  quizState.questionsData = ZHUYIN_DATA.syllables.map(syllable => ({
+  const readingQuestions = ZHUYIN_DATA.syllables.map(syllable => ({
+    type: 'reading',
     zhuyin: syllable.zhuyin,
     correct: syllable.pinyin,
     pinyin: syllable.pinyin,
     japanese: syllable.japanese,
-    tone: syllable.tone
+    question: '読み方は？'
   }));
 
-  // シャッフル＆最初の10問を取得
-  quizState.questionsData = quizState.questionsData
-    .sort(() => Math.random() - 0.5)
-    .slice(0, quizState.totalQuestions);
+  // 声調判定問題を生成（複数回の音節から）
+  const toneQuestions = [];
+  const tones = ['1', '2', '3', '4', '5'];
+  for (let i = 0; i < 3; i++) {
+    const randomSyllable = ZHUYIN_DATA.syllables[Math.floor(Math.random() * ZHUYIN_DATA.syllables.length)];
+    const randomTone = tones[Math.random() * 5 | 0];
+    const pinyinWithTone = getToneMarkedPinyin(randomSyllable.pinyin, randomTone);
+    const hanzi = getToneHanzi(randomSyllable.pinyin, randomTone);
+    
+    toneQuestions.push({
+      type: 'tone',
+      zhuyin: randomSyllable.zhuyin,
+      pinyin: randomSyllable.pinyin,
+      pinyinWithTone: pinyinWithTone,
+      hanzi: hanzi,
+      correct: TONE_SYMBOLS[randomTone].desc,
+      tone: randomTone,
+      japanese: randomSyllable.japanese,
+      question: `「${hanzi}」は何声？`
+    });
+  }
+
+  // 7問の読み方 + 3問の声調判定
+  quizState.questionsData = [
+    ...readingQuestions.sort(() => Math.random() - 0.5).slice(0, 7),
+    ...toneQuestions
+  ];
+  
+  // シャッフル
+  quizState.questionsData = quizState.questionsData.sort(() => Math.random() - 0.5);
+  quizState.totalQuestions = quizState.questionsData.length;
 }
 
 // 4択の選択肢を生成
@@ -30,12 +58,24 @@ function generateOptions(currentQuestion) {
   const correct = currentQuestion.correct;
   const options = [correct];
 
-  // 他の選択肢をランダムに選ぶ
-  const otherOptions = ZHUYIN_DATA.syllables
-    .filter(s => s.pinyin !== correct)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
-    .map(s => s.pinyin);
+  let otherOptions = [];
+  
+  if (currentQuestion.type === 'reading') {
+    // 読み方問題 - 他のピンインを選択肢として使う
+    otherOptions = ZHUYIN_DATA.syllables
+      .filter(s => s.pinyin !== correct)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map(s => s.pinyin);
+  } else if (currentQuestion.type === 'tone') {
+    // 声調判定問題 - 他の声調を選択肢として使う
+    const tones = ['1', '2', '3', '4', '5'];
+    otherOptions = tones
+      .filter(t => TONE_SYMBOLS[t].desc !== correct)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map(t => TONE_SYMBOLS[t].desc);
+  }
 
   options.push(...otherOptions);
 
@@ -50,11 +90,19 @@ function updateProgress() {
   progressEl.textContent = `問題 ${questionNum}/${quizState.totalQuestions}`;
 }
 
-// 注音符号を表示
+// 注音符号と問題文を表示
 function displayZhuyin() {
   const zhuyinDisplay = document.getElementById('zhuyinDisplay');
+  const quizQuestion = document.getElementById('quiz-question');
   const currentQuestion = quizState.questionsData[quizState.currentQuestion];
-  zhuyinDisplay.textContent = currentQuestion.zhuyin;
+  
+  if (currentQuestion.type === 'reading') {
+    zhuyinDisplay.textContent = currentQuestion.zhuyin;
+    quizQuestion.textContent = '読み方は？';
+  } else if (currentQuestion.type === 'tone') {
+    zhuyinDisplay.innerHTML = `<span class="tone-pinyin-display">${currentQuestion.hanzi}</span>`;
+    quizQuestion.textContent = currentQuestion.question;
+  }
 }
 
 // 選択肢を表示
@@ -113,14 +161,25 @@ function showResult(isCorrect, question) {
   const resultArea = document.getElementById('resultArea');
   const resultClass = isCorrect ? 'result correct' : 'result incorrect';
   const resultText = isCorrect ? '正解！' : '不正解';
-  const pinyinText = `ピンイン: ${question.pinyin}`;
-  const japaneseText = `日本語読み: ${question.japanese}`;
+  
+  let detailText = '';
+  if (question.type === 'reading') {
+    detailText = `
+      <p>ピンイン: ${question.pinyin}</p>
+      <p>日本語読み: ${question.japanese}</p>
+    `;
+  } else if (question.type === 'tone') {
+    detailText = `
+      <p>ピンイン（声調付き）: ${question.pinyinWithTone}</p>
+      <p>声調: ${question.correct}</p>
+      <p>日本語読み: ${question.japanese}</p>
+    `;
+  }
 
   resultArea.innerHTML = `
     <div class="${resultClass}">
       <p>${resultText}</p>
-      <p>${pinyinText}</p>
-      <p>${japaneseText}</p>
+      ${detailText}
     </div>
   `;
 }

@@ -1,14 +1,37 @@
-// 音声再生関数（ピンイン付き声調対応版）
+// 音声再生関数（漢字ベースの声調対応版）
 function speakZhuyin(pinyin, tone = '1') {
-  // 声調マーク付きピンインを取得
-  const pinyinWithTone = getToneMarkedPinyin(pinyin, tone);
+  // 声調付き漢字を取得
+  const hanzi = getToneHanzi(pinyin, tone);
   
   // ブラウザの音声認識APIを使用
-  const utterance = new SpeechSynthesisUtterance(pinyinWithTone);
+  const utterance = new SpeechSynthesisUtterance(hanzi);
   utterance.lang = 'zh-TW'; // 台湾中文
   utterance.rate = 0.8; // 少しゆっくり
-  utterance.pitch = 1;
   utterance.volume = 1;
+
+  // 声調によるpitchとrateの調整
+  switch (tone) {
+    case '1':
+      utterance.pitch = 1.2;
+      utterance.rate = 0.9;
+      break;
+    case '2':
+      utterance.pitch = 1.0; // 0.8から1.3に上昇（平均1.0）
+      utterance.rate = 0.8;
+      break;
+    case '3':
+      utterance.pitch = 0.7;
+      utterance.rate = 0.8;
+      break;
+    case '4':
+      utterance.pitch = 1.0; // 1.3から0.6に下降（平均1.0）
+      utterance.rate = 0.8;
+      break;
+    case '5':
+      utterance.pitch = 1.0;
+      utterance.rate = 1.1;
+      break;
+  }
 
   // Chrome/Firefoxの場合、より良い結果を得るため
   window.speechSynthesis.cancel();
@@ -40,7 +63,8 @@ function showToneButtons(cell, pinyin, syllable) {
     btn.className = 'tone-btn';
     const toneInfo = TONE_SYMBOLS[tone.toString()];
     const toneMarkedPinyin = getToneMarkedPinyin(pinyin, tone.toString());
-    btn.innerHTML = `<span class="tone-mark">${toneInfo.mark}</span><br><span class="tone-pinyin">${toneMarkedPinyin}</span><br><span class="tone-desc">${toneInfo.desc}</span>`;
+    const hanzi = getToneHanzi(pinyin, tone.toString());
+    btn.innerHTML = `<span class="tone-mark">${toneInfo.mark}</span><br><span class="tone-pinyin">${toneMarkedPinyin}</span><br><span class="tone-hanzi">${hanzi}</span><br><span class="tone-desc">${toneInfo.desc}</span>`;
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       speakZhuyin(pinyin, tone.toString());
