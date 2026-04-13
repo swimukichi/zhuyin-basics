@@ -105,15 +105,136 @@ h2 {
   margin-bottom: 4px;
 }
 
+.tone-indicator {
+  font-size: 14px;
+  color: var(--accent-color);
+  font-weight: bold;
+  margin: 2px 0;
+  letter-spacing: 2px;
+}
+
 .syllable-romaji {
   font-size: 12px;
   color: #666;
   margin-bottom: 2px;
 }
 
+.tone-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin: 4px 0;
+}
+
+.tone-btn {
+  padding: 2px 4px;
+  background: #f8f9fa;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--accent-color);
+  min-width: 20px;
+}
+
+.tone-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.tone-btn.active {
+  background: var(--accent-color);
+  color: white;
+}
+
 .syllable-japanese {
   font-size: 12px;
   color: var(--accent-color);
+}
+
+/* 声調パネル */
+.tone-panel {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border: 2px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tone-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: 12px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.tone-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tone-btn {
+  padding: 12px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.tone-btn:hover {
+  border-color: var(--accent-color);
+  background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.tone-btn.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.tone-mark {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.tone-pinyin {
+  font-size: 12px;
+  display: block;
+}
+
+.tone-desc {
+  font-size: 11px;
+  color: #999;
+  display: block;
+  margin-top: 2px;
 }
 
 /* クイズ */
@@ -138,6 +259,13 @@ h2 {
   color: var(--accent-color);
   margin: 20px 0;
   font-weight: bold;
+}
+
+.tone-pinyin-display {
+  font-size: 48px;
+  color: var(--accent-color);
+  font-weight: bold;
+  letter-spacing: 4px;
 }
 
 .quiz-progress {
