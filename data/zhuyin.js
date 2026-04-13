@@ -1,4 +1,61 @@
-// 注音符号（BoPoMoFo）学習データ
+// 注音符号（BoPoMoFo）学習データ - 声調対応版
+
+// 声調シンボルと説明
+const TONE_SYMBOLS = {
+  '1': { mark: 'ˉ', desc: '第1声' },
+  '2': { mark: 'ˊ', desc: '第2声' },
+  '3': { mark: 'ˇ', desc: '第3声' },
+  '4': { mark: 'ˋ', desc: '第4声' },
+  '5': { mark: '・', desc: '軽声' }
+};
+
+// 標準のピンイン（声調記号付き）
+const PINYIN_TONES = {
+  'ma': ['mā', 'má', 'mǎ', 'mà', 'ma'],
+  'mo': ['mō', 'mó', 'mǒ', 'mò', 'mo'],
+  'ba': ['bā', 'bá', 'bǎ', 'bà', 'ba'],
+  'pa': ['pā', 'pá', 'pǎ', 'pà', 'pa'],
+  'po': ['pō', 'pó', 'pǒ', 'pò', 'po'],
+  'me': ['mē', 'mé', 'mě', 'mè', 'me'],
+  'bo': ['bō', 'bó', 'bǒ', 'bò', 'bo'],
+  'fo': ['fō', 'fó', 'fǒ', 'fò', 'fo'],
+  'fa': ['fā', 'fá', 'fǎ', 'fà', 'fa'],
+  'da': ['dā', 'dá', 'dǎ', 'dà', 'da'],
+  'ta': ['tā', 'tá', 'tǎ', 'tà', 'ta'],
+  'na': ['nā', 'ná', 'nǎ', 'nà', 'na'],
+  'la': ['lā', 'lá', 'lǎ', 'là', 'la'],
+  'ga': ['gā', 'gá', 'gǎ', 'gà', 'ga'],
+  'ka': ['kā', 'ká', 'kǎ', 'kà', 'ka'],
+  'ha': ['hā', 'há', 'hǎ', 'hà', 'ha'],
+  'ji': ['jī', 'jí', 'jǐ', 'jì', 'ji'],
+  'qi': ['qī', 'qí', 'qǐ', 'qì', 'qi'],
+  'xi': ['xī', 'xí', 'xǐ', 'xì', 'xi'],
+  'zha': ['zhā', 'zhá', 'zhǎ', 'zhà', 'zha'],
+  'cha': ['chā', 'chá', 'chǎ', 'chà', 'cha'],
+  'sha': ['shā', 'shá', 'shǎ', 'shà', 'sha'],
+  'ra': ['rā', 'rá', 'rǎ', 'rà', 'ra'],
+  'za': ['zā', 'zá', 'zǎ', 'zà', 'za'],
+  'ca': ['cā', 'cá', 'cǎ', 'cà', 'ca'],
+  'sa': ['sā', 'sá', 'sǎ', 'sà', 'sa'],
+  'and_more': 'etc...'
+};
+
+// ピンイン標準化（その他のすべて）
+function getToneMarkedPinyin(pinyin, tone) {
+  // 特定のマッピングがある場合はそれを使用
+  if (PINYIN_TONES[pinyin]) {
+    return PINYIN_TONES[pinyin][parseInt(tone) - 1] || pinyin;
+  }
+  // デフォルト - 開音 'a'にマークを付ける
+  const toneMarks = ['ā', 'á', 'ǎ', 'à'];
+  if (pinyin.includes('a') && tone !== '5') {
+    const index = pinyin.indexOf('a');
+    const markIndex = parseInt(tone) - 1;
+    return pinyin.substring(0, index) + toneMarks[markIndex] + pinyin.substring(index + 1);
+  }
+  return pinyin;
+}
+
 const ZHUYIN_DATA = {
   // 声母（子音） - 21個
   consonants: [
