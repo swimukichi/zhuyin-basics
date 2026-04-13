@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注音符号学習 - 音節表</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🇹🇼 注音符号学習サイト</h1>
+    <p>台湾の言語を学ぼう！注音符号の基本をマスターしましょう。</p>
+  </header>
+
+  <nav>
+    <a href="index.html" class="active">音節表</a>
+    <a href="quiz.html">クイズ</a>
+  </nav>
+
+  <main>
+    <h2>注音符号音節表</h2>
+    <p style="color: #666; margin-bottom: 20px;">セルをクリックすると音が鳴ります。声母（子音）と韻母（母音）の組み合わせを学習しましょう。</p>
+
+    <table class="syllable-table" id="syllableTable">
+      <!-- JavaScriptで動的に生成 -->
+    </table>
+  </main>
+
+  <script src="data/zhuyin.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

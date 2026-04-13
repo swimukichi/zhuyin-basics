@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注音符号学習 - クイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🇹🇼 注音符号学習サイト</h1>
+    <p>台湾の言語を学ぼう！注音符号の基本をマスターしましょう。</p>
+  </header>
+
+  <nav>
+    <a href="index.html">音節表</a>
+    <a href="quiz.html" class="active">クイズ</a>
+  </nav>
+
+  <main>
+    <h2>注音符号読み方クイズ</h2>
+
+    <div class="quiz-container">
+      <div class="quiz-progress" id="progress">
+        <!-- 進捗情報がここに表示されます -->
+      </div>
+
+      <div class="quiz-question">次の文字の読み方は？</div>
+
+      <div class="quiz-hangul" id="zhuyinDisplay">
+        <!-- 注音符号がここに表示されます -->
+      </div>
+
+      <div class="quiz-options" id="optionsContainer">
+        <!-- 4択の選択肢がここに表示されます -->
+      </div>
+
+      <div id="resultArea">
+        <!-- 結果メッセージがここに表示されます -->
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="nextBtn" style="display: none;">次へ</button>
+        <button id="restartBtn" style="display: none;">もう一度クイズを開始</button>
+      </div>
+
+      <div id="finalScoreArea">
+        <!-- 最終スコアがここに表示されます -->
+      </div>
+    </div>
+  </main>
+
+  <script src="data/zhuyin.js"></script>
+  <script src="script.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
