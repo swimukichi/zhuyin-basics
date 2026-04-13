@@ -20,24 +20,36 @@ function generateQuizQuestions() {
     question: '読み方は？'
   }));
 
-  // 声調判定問題を生成（複数回の音節から）
+  // 声調判定問題を生成（漢字データがある音節・声調のみを使用）
   const toneQuestions = [];
-  const tones = ['1', '2', '3', '4', '5'];
-  for (let i = 0; i < 3; i++) {
-    const randomSyllable = ZHUYIN_DATA.syllables[Math.floor(Math.random() * ZHUYIN_DATA.syllables.length)];
-    const randomTone = tones[Math.random() * 5 | 0];
-    const pinyinWithTone = getToneMarkedPinyin(randomSyllable.pinyin, randomTone);
-    const hanzi = getToneHanzi(randomSyllable.pinyin, randomTone);
-    
+  const toneKeys = ['1', '2', '3', '4', '5'];
+
+  // 漢字データがある（音節, 声調）の組み合わせを列挙
+  const validTonePairs = [];
+  ZHUYIN_DATA.syllables.forEach(syllable => {
+    if (!syllable.tones) return;
+    syllable.tones.forEach((hanzi, idx) => {
+      if (hanzi) {
+        validTonePairs.push({ syllable, tone: String(idx + 1), hanzi });
+      }
+    });
+  });
+
+  // ランダムに3問選ぶ
+  const shuffled = validTonePairs.sort(() => Math.random() - 0.5);
+  for (let i = 0; i < Math.min(3, shuffled.length); i++) {
+    const { syllable, tone: randomTone, hanzi } = shuffled[i];
+    const pinyinWithTone = getToneMarkedPinyin(syllable.pinyin, randomTone);
+
     toneQuestions.push({
       type: 'tone',
-      zhuyin: randomSyllable.zhuyin,
-      pinyin: randomSyllable.pinyin,
+      zhuyin: syllable.zhuyin,
+      pinyin: syllable.pinyin,
       pinyinWithTone: pinyinWithTone,
       hanzi: hanzi,
       correct: TONE_SYMBOLS[randomTone].desc,
       tone: randomTone,
-      japanese: randomSyllable.japanese,
+      japanese: syllable.japanese,
       question: `「${hanzi}」は何声？`
     });
   }

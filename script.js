@@ -1,39 +1,9 @@
-// 音声再生関数（漢字ベースの声調対応版）
+// 音声再生関数
+// 各声調の代表漢字をzh-TWでそのまま読み上げる（pitch/rate操作なし）
 function speakZhuyin(pinyin, tone = '1') {
-  // 声調付き漢字を取得
   const hanzi = getToneHanzi(pinyin, tone);
-  
-  // ブラウザの音声認識APIを使用
   const utterance = new SpeechSynthesisUtterance(hanzi);
-  utterance.lang = 'zh-TW'; // 台湾中文
-  utterance.rate = 0.8; // 少しゆっくり
-  utterance.volume = 1;
-
-  // 声調によるpitchとrateの調整
-  switch (tone) {
-    case '1':
-      utterance.pitch = 1.2;
-      utterance.rate = 0.9;
-      break;
-    case '2':
-      utterance.pitch = 1.0; // 0.8から1.3に上昇（平均1.0）
-      utterance.rate = 0.8;
-      break;
-    case '3':
-      utterance.pitch = 0.7;
-      utterance.rate = 0.8;
-      break;
-    case '4':
-      utterance.pitch = 1.0; // 1.3から0.6に下降（平均1.0）
-      utterance.rate = 0.8;
-      break;
-    case '5':
-      utterance.pitch = 1.0;
-      utterance.rate = 1.1;
-      break;
-  }
-
-  // Chrome/Firefoxの場合、より良い結果を得るため
+  utterance.lang = 'zh-TW';
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
 }
